@@ -105,7 +105,7 @@ export default function HomeScreen() {
       
       if (isConnected) {
         console.log('Network connected - resuming upload...');
-        setStatus('Network connected - resuming upload...');
+        setStatus('Network connected');
       } else {
         console.log('Network disconnected...');
         setStatus('Network disconnected');
@@ -186,6 +186,17 @@ export default function HomeScreen() {
           setQueuedBlocks(pendingBlocks.current.length);
           
           console.log(`✅ Block ${blockInfo.position}ms uploaded (${pendingBlocks.current.length} remaining)`);
+
+          // Commit block list after each successful block upload
+          try {
+            console.log('📝 Committing updated block list...');
+            await blobClient.current?.commitBlockList(blockIds.current);
+            console.log('✅ Block list committed');
+          } catch (error) {
+            console.error('❌ Error committing block list:', error);
+            // Continue even if commit fails - we can retry later
+          }
+
           setStatus(`Uploading: ${Math.round(blockInfo.position / 1000)}s (${pendingBlocks.current.length} blocks queued)`);
         } catch (error) {
           console.error(`❌ Error uploading block ${blockInfo.position}ms:`, error);
