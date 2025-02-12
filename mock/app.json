@@ -25,6 +25,7 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      "@siteed/expo-audio-stream",
       "expo-router",
       [
         "expo-splash-screen",
